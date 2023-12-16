@@ -1,5 +1,5 @@
-#ifndef TIC_H
-#define TIC_H
+#ifndef TIC_READER_H
+#define TIC_READER_H
 
 /* Arduino libraries */
 #include <Arduino.h>
@@ -19,7 +19,7 @@ struct tic_message {
 /**
  *
  */
-class tic {
+class tic_reader {
    public:
     /* Setup */
     int setup(Stream &uart);

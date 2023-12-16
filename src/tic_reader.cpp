@@ -1,12 +1,12 @@
 /* Self header */
-#include "tic.h"
+#include "tic_reader.h"
 
 /**
  * @brief
  * @param[in] uart
  * @return
  */
-int tic::setup(Stream &uart) {
+int tic_reader::setup(Stream &uart) {
 
     /* Save uart */
     m_stream = &uart;
@@ -23,7 +23,7 @@ int tic::setup(Stream &uart) {
  * @param[out] message
  * @return
  */
-int tic::process(struct tic_message &message) {
+int tic_reader::process(struct tic_message &message) {
 
     /* Ensure setup has been performed */
     if (m_stream == NULL) {
