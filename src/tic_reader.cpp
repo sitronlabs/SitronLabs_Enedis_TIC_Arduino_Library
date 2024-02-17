@@ -1,6 +1,17 @@
 /* Self header */
 #include "tic_reader.h"
 
+#ifndef CONFIG_TIC_DEBUG_ENABLED
+#define CONFIG_TIC_DEBUG_ENABLED 0  //!< Set this to 1 to turn on verbose debugging.
+#endif
+#if CONFIG_TIC_DEBUG_ENABLED
+#ifndef CONFIG_TIC_DEBUG_FUNCTION
+#define CONFIG_TIC_DEBUG_FUNCTION(x) Serial.println(F(x))
+#endif
+#else
+#define CONFIG_TIC_DEBUG_FUNCTION(x)
+#endif
+
 /**
  * @brief
  * @param[in] uart
@@ -36,15 +47,15 @@ int tic_reader::read(struct tic_dataset &dataset) {
         /* Read byte */
         int rx = m_stream->read();
         if (rx < 0 || rx > UINT8_MAX) {
-            // Serial.println(" [e] Read error!");
+            CONFIG_TIC_DEBUG_FUNCTION(" [e] Read error!");
             m_sm = STATE_0;
             return -EIO;
         }
 
         /* Perform parity check */
         if (__builtin_parity(rx) != 0) {
+            CONFIG_TIC_DEBUG_FUNCTION(" [e] Parity error!");
             m_sm = STATE_0;
-            // Serial.println(" [e] Parity error!");
             return -EIO;
         }
 
@@ -92,7 +103,7 @@ int tic_reader::read(struct tic_dataset &dataset) {
                 /* Otherwise, keep appending */
                 else {
                     if (m_dataset_buffer_index >= TIC_PARSER_DATASET_NAME_LENGTH_MAX) {
-                        // Serial.println(" [e] Dataset name too long!");
+                        CONFIG_TIC_DEBUG_FUNCTION(" [e] Dataset name too long!");
                         m_sm = STATE_0;
                         return -EIO;
                     } else {
@@ -120,8 +131,8 @@ int tic_reader::read(struct tic_dataset &dataset) {
                         }
                         checksum_computed = (checksum_computed & 0x3F) + 0x20;
                         if (checksum_computed != checksum_received) {
+                            CONFIG_TIC_DEBUG_FUNCTION(" [e] Corrupt dataset!");
                             m_sm = STATE_0;
-                            Serial.println(" [e] Corrupt dataset!");
                             return -EIO;
                         }
                     } else if (m_splitter_char == 0x09) {
@@ -132,13 +143,13 @@ int tic_reader::read(struct tic_dataset &dataset) {
                         }
                         checksum_computed = (checksum_computed & 0x3F) + 0x20;
                         if (checksum_computed != checksum_received) {
+                            CONFIG_TIC_DEBUG_FUNCTION(" [e] Corrupt dataset!");
                             m_sm = STATE_0;
-                            // Serial.println(" [e] Corrupt dataset!");
                             return -EIO;
                         }
                     } else {
+                        CONFIG_TIC_DEBUG_FUNCTION(" [e] Unsupported splitter char!");
                         m_sm = STATE_0;
-                        // Serial.println(" [e] Unsupported splitter char!");
                         return -EIO;
                     }
 
@@ -185,7 +196,7 @@ int tic_reader::read(struct tic_dataset &dataset) {
                         m_sm = STATE_1;
                         return 1;
                     } else {
-                        // Serial.println(" [e] Invalid splitter count!");
+                        CONFIG_TIC_DEBUG_FUNCTION(" [e] Invalid splitter count!");
                         m_sm = STATE_0;
                         return -EIO;
                     }
@@ -195,7 +206,7 @@ int tic_reader::read(struct tic_dataset &dataset) {
                 /* Otherwise, keep appending data to current dataset */
                 else {
                     if (m_dataset_buffer_index >= (TIC_PARSER_DATASET_NAME_LENGTH_MAX + 1 + TIC_PARSER_DATASET_TIME_LENGTH_MAX + 1 + TIC_PARSER_DATASET_DATA_LENGTH_MAX + 1 + TIC_PARSER_DATASET_CHECKSUM_LENGTH_MAX)) {
-                        // Serial.println(" [e] Dataset content too long!");
+                        CONFIG_TIC_DEBUG_FUNCTION(" [e] Dataset content too long!");
                         m_sm = STATE_0;
                     } else {
                         m_dataset_buffer[m_dataset_buffer_index] = rx;
