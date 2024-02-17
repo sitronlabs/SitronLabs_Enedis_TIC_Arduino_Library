@@ -205,7 +205,7 @@ int tic_reader::read(struct tic_dataset &dataset) {
 
                 /* Otherwise, keep appending data to current dataset */
                 else {
-                    if (m_dataset_buffer_index >= (TIC_PARSER_DATASET_NAME_LENGTH_MAX + 1 + TIC_PARSER_DATASET_TIME_LENGTH_MAX + 1 + TIC_PARSER_DATASET_DATA_LENGTH_MAX + 1 + TIC_PARSER_DATASET_CHECKSUM_LENGTH_MAX)) {
+                    if (m_dataset_buffer_index >= (sizeof(m_dataset_buffer) / sizeof(char))) {
                         CONFIG_TIC_DEBUG_FUNCTION(" [e] Dataset content too long!");
                         m_sm = STATE_0;
                     } else {
