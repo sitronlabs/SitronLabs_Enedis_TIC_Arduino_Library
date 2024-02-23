@@ -1,6 +1,6 @@
 {
     "name": "Sitron_Labs_TIC_Arduino_Library",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Arduino library for parsing consumer-side data provided by electricity meters in France.",
     "keywords": "sitron labs,sitron,labs,arduino,library,uart,enedis,linky,tic,tele information client,parser",
     "repository": {
