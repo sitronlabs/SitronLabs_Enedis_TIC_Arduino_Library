@@ -7,7 +7,7 @@
 /* Peripherals */
 static wk2132 m_wk2132;
 static tic_reader m_tic_reader;
-static LiquidCrystal m_lcd(8, 9, 9, 4, 5, 6, 7);
+static LiquidCrystal m_lcd(8, 9, 4, 5, 6, 7);
 
 /**
  *
